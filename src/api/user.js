@@ -31,7 +31,7 @@ export const logout = (token) => {
   })
 }
 
-export const getUnreadCount = () => {
+/* export const getUnreadCount = () => {
   return axios.request({
     url: 'message/count',
     method: 'get'
@@ -83,4 +83,4 @@ export const restoreTrash = msg_id => {
       msg_id
     }
   })
-}
+} */
