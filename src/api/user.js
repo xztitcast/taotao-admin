@@ -1,8 +1,8 @@
 import axios from '@/libs/api.request'
 
-export const login = ({ userName, password, uuid, captcha }) => {
+export const login = ({ username, password, uuid, captcha }) => {
   const data = {
-    userName,
+    username,
     password,
     uuid,
     captcha
@@ -16,7 +16,7 @@ export const login = ({ userName, password, uuid, captcha }) => {
 
 export const getUserInfo = (token) => {
   return axios.request({
-    url: 'sys/user/info',
+    url: '/sys/user/info',
     params: {
       token
     },
@@ -26,7 +26,7 @@ export const getUserInfo = (token) => {
 
 export const logout = (token) => {
   return axios.request({
-    url: 'logout',
+    url: '/sys/logout',
     method: 'post'
   })
 }

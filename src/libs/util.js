@@ -397,3 +397,7 @@ export const setTitle = (routeItem, vm) => {
   const resTitle = pageTitle ? `${title} - ${pageTitle}` : title
   window.document.title = resTitle
 }
+
+export function hasPerms (key) {
+  return JSON.parse(sessionStorage.getItem('permissions') || '[]').indexOf(key) !== -1 || false
+}

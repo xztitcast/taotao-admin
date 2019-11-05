@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { getToken } from '@/libs/util'
 
 class HttpRequest {
   constructor (baseUrl = baseURL) {
@@ -27,6 +28,7 @@ class HttpRequest {
       if (!Object.keys(this.queue).length) {
         // Spin.show() // 不建议开启，因为界面不友好
       }
+      config.headers['token'] = getToken()
       this.queue[url] = true
       return config
     }, error => {

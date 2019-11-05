@@ -7,7 +7,7 @@ import { setToken, getToken } from '@/libs/util'
 
 export default {
   state: {
-    userName: '',
+    username: '',
     userId: '',
     avatarImgPath: '',
     token: getToken(),
@@ -21,8 +21,8 @@ export default {
     setUserId (state, id) {
       state.userId = id
     },
-    setUserName (state, name) {
-      state.userName = name
+    setUsername (state, name) {
+      state.username = name
     },
     setAccess (state, access) {
       state.access = access
@@ -37,20 +37,22 @@ export default {
   },
   actions: {
     // 登录
-    handleLogin ({ commit }, { userName, password, uuid, captcha }) {
-      userName = userName.trim()
+    handleLogin ({ commit }, { username, password, uuid, captcha }) {
+      username = username.trim()
       return new Promise((resolve, reject) => {
         login({
-          userName,
+          username,
           password,
           uuid,
           captcha
         }).then(res => {
-          /* const data = res.data
-          commit('setToken', data.token) */
-          const token = res.result
-          commit('setToken', token)
-          resolve()
+          const data = res.data
+          if (data.code === 0) {
+            commit('setToken', data.result)
+            resolve()
+          } else {
+            reject(data.message)
+          }
         }).catch(err => {
           reject(err)
         })
@@ -79,7 +81,7 @@ export default {
           getUserInfo(state.token).then(res => {
             const data = res.data
             commit('setAvatar', data.avatar)
-            commit('setUserName', data.name)
+            commit('setUsername', data.name)
             commit('setUserId', data.user_id)
             commit('setAccess', data.access)
             commit('setHasGetInfo', true)

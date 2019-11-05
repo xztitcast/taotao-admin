@@ -18,17 +18,8 @@ import Main from '@/components/main'
  */
 
 export default [
-  {
-    path: '/login',
-    name: 'login',
-    meta: {
-      title: 'Login - 登录',
-      hideInMenu: true
-    },
-    component: () => import('@/view/login/login.vue')
-  },
-  {
-    path: '/',
+  { path: '/login', name: 'login', meta: { title: 'Login - 登录', hideInMenu: true }, component: () => import('@/view/login/login.vue') },
+  { path: '/',
     name: '_home',
     redirect: '/home',
     component: Main,
@@ -76,6 +67,35 @@ export default [
           title: '数据上传'
         },
         component: () => import('@/view/update/update-table.vue')
+      }
+    ]
+  },
+  {
+    path: '/modules',
+    name: 'modules',
+    meta: {
+      icon: 'md-settings',
+      title: '系统管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: '/admin_user',
+        name: 'admin_user',
+        meta: {
+          icon: 'ios-people',
+          title: '用户管理'
+        },
+        component: () => import('@/view/modules/sys/user.vue')
+      },
+      {
+        path: '/admin_role',
+        name: 'admin_role',
+        meta: {
+          icon: 'md-person',
+          title: '角色管理'
+        },
+        component: () => import('@/view/modules/sys/user.vue')
       }
     ]
   },

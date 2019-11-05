@@ -9,7 +9,8 @@ const { homeName } = config
 
 Vue.use(Router)
 const router = new Router({
-  routes
+  routes,
+  isAddDynamicMenuRoutes: false // 是否已经添加动态(菜单)路由
   // mode: 'history'
 })
 const LOGIN_PAGE_NAME = 'login'
