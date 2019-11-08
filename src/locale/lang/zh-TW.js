@@ -17,5 +17,6 @@ export default {
   params: '動態路由',
   modules: '系統管理',
   admin_user: '用戶管理',
-  admin_role: '角色管理'
+  admin_role: '角色管理',
+  admin_menu: '菜單管理'
 }

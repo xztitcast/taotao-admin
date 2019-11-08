@@ -8,17 +8,19 @@
       </FormItem>
       <FormItem>
         <Button @click="getDataList">查询</Button>
-        <Button v-if="this.$hasPerms('sys:user:save')">新增</Button>
-        <Button v-if="this.$hasPerms('sys:user:delete')">批量删除</Button>
+        <!--<Button v-if="this.$hasPerms('sys:user:save')" @click="addOrUpdateHandle">新增</Button>
+        <Button v-if="this.$hasPerms('sys:user:delete')">批量删除</Button>-->
+        <Button v-if="true" @click="addOrUpdateHandle()">新增</Button>
+        <Button v-if="true" @click="removeHandle()" :disabled="idListSelect.length <= 0">批量删除</Button>
       </FormItem>
     </Form>
-    <Table border :loading="isLoading" ref="selection" :columns="columns" :data="dataList">
+    <Table border :loading="isLoading" ref="selection" :columns="columns" :data="dataList" @on-selection-change="selectionChangeHandle">
       <template slot-scope="{ row }" slot="status">
-        <Tag v-if="row.status === 1" size="medium" color="error">禁用</Tag>
+        <Tag v-if="row.status" size="medium" color="error">禁用</Tag>
         <Tag v-else size="default" color="success">正常</Tag>
       </template>
       <template slot-scope="{ row }" slot="handle">
-        <Button type="warning" size="small" style="margin-right: 5px" @click="updateHandle(row.userId)">修改</Button>
+        <Button type="warning" size="small" style="margin-right: 5px" @click="addOrUpdateHandle(row.userId)">修改</Button>
         <Button type="error" size="small" @click="removeHandle(row.userId)">删除</Button>
       </template>
     </Table>
@@ -30,7 +32,7 @@
             @on-page-size-change="sizeChangeHandle"
             show-total show-sizer></Page>
     </div>
-    <user-add-or-update v-if="addOrUpdateVisible" ref="userAddOrUpdate" @refreshDataList="getDataList"></user-add-or-update>
+    <user-add-or-update ref="userAddOrUpdate" @refreshDataList="getDataList"></user-add-or-update>
   </div>
 </template>
 <script>
@@ -49,7 +51,7 @@ export default {
       pageNum: 1,
       pageSize: 20,
       total: 0,
-      addOrUpdateVisible: false,
+      idListSelect: [],
       columns: [
         {
           type: 'selection',
@@ -107,15 +109,42 @@ export default {
       this.pageNum = 1
       this.getDataList()
     },
-    updateHandle (id) {
-      console.log(id)
-      this.addOrUpdateVisible = true
+    selectionChangeHandle (value) {
+      this.idListSelect = value
+    },
+    addOrUpdateHandle (id) {
       this.$nextTick(() => {
         this.$refs.userAddOrUpdate.init(id)
       })
     },
-    removeHandle () {
-
+    removeHandle (id) {
+      const userIds = id ? [id] : this.idListSelect.map(item => { return item.userId })
+      this.$Modal.confirm({
+        closable: true,
+        content: `确定对[id=${userIds.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`,
+        okText: '确定',
+        cancelText: '取消',
+        onOk: () => {
+          this.$http.request({
+            url: '/sys/user/delete',
+            method: 'post',
+            data: userIds
+          }).then(({ data }) => {
+            if (data && data.code === 0) {
+              this.$Message.success({
+                content: data.message,
+                duration: 3,
+                onClose: () => {
+                  this.getDataList()
+                }
+              })
+            } else {
+              this.$Message.error(data.message)
+            }
+          })
+          this.$Modal.remove()
+        }
+      })
     },
     getDataList () {
       this.$http.request({
@@ -130,11 +159,11 @@ export default {
         if (data && data.code === 0) {
           this.dataList = data.result.rows
           this.total = Number(data.result.total)
-          this.isLoading = false
         } else {
           this.dataList = []
           this.total = 0
         }
+        this.isLoading = false
       })
     }
   }

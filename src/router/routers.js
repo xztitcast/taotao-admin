@@ -95,7 +95,16 @@ export default [
           icon: 'md-person',
           title: '角色管理'
         },
-        component: () => import('@/view/modules/sys/user.vue')
+        component: () => import('@/view/modules/sys/role.vue')
+      },
+      {
+        path: '/admin_menu',
+        name: 'admin_menu',
+        meta: {
+          icon: 'md-menu',
+          title: '菜单管理'
+        },
+        component: () => import('@/view/modules/sys/menu.vue')
       }
     ]
   },

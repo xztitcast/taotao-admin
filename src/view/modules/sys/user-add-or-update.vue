@@ -1,14 +1,11 @@
 <template>
-  <Modal v-model="visible" :title="!dataForm.id ? '新增' : '修改'" :mask-closable="false">
+  <Modal v-model="visible" :title="!dataForm.userId ? '新增' : '修改'" :mask-closable="false">
     <Form ref="dataForm" :model="dataForm" :rules="dataRules" @keyup.enter.native="handleSubmit">
       <FormItem prop="username" label="用户名">
         <Input v-model="dataForm.username" placeholder="登陆账号"></Input>
       </FormItem>
       <FormItem prop="password" label="密码">
         <Input v-model="dataForm.password" placeholder="密码"></Input>
-      </FormItem>
-      <FormItem prop="comfirmPassword" label="确认密码">
-        <Input v-model="dataForm.comfirmPassword" placeholder="确认密码"></Input>
       </FormItem>
       <FormItem prop="email" label="邮箱">
         <Input v-model="dataForm.email" placeholder="邮箱"></Input>
@@ -23,8 +20,8 @@
       </FormItem>
       <FormItem prop="status" label="状态">
         <RadioGroup v-model="dataForm.status">
-          <Radio :label="0">正常</Radio>
-          <Radio :label="1">禁用</Radio>
+          <Radio :label=0>正常</Radio>
+          <Radio :label=1>禁用</Radio>
         </RadioGroup>
       </FormItem>
     </Form>
@@ -41,11 +38,9 @@ export default {
       visible: false,
       roleList: [],
       dataForm: {
-        id: 0,
+        userId: 0,
         username: '',
         password: '',
-        comfirmPassword: '',
-        salt: '',
         email: '',
         mobile: '',
         roleIdList: [],
@@ -60,7 +55,7 @@ export default {
   },
   methods: {
     init (id) {
-      this.dataForm.id = id || 0
+      this.dataForm.userId = id || 0
       this.$http.request({
         url: '/sys/role/select',
         method: 'get'
@@ -72,9 +67,9 @@ export default {
           this.$refs.dataForm.resetFields()
         })
       }).then(() => {
-        if (this.dataForm.id) {
+        if (this.dataForm.userId) {
           this.$http.request({
-            url: '/sys/user/info/' + `${this.dataForm.id}`,
+            url: `/sys/user/info/${this.dataForm.userId}`,
             method: 'get'
           }).then(({ data }) => {
             if (data && data.code === 0) {
@@ -88,15 +83,17 @@ export default {
       this.$refs.dataForm.validate((valid) => {
         if (valid) {
           this.$http.request({
-            url: '/sys/user/' + `${!this.dataForm.id ? 'save' : 'update'}`,
+            url: `/sys/user/${!this.dataForm.userId ? 'save' : 'update'}`,
             method: 'post',
-            params: this.dataForm
+            data: this.dataForm,
+            dataType: 'json'
           }).then(({ data }) => {
             if (data && data.code === 0) {
-              this.$Message({
-                message: '操作成功',
-                type: 'success',
-                duration: 1500,
+              this.visible = false
+              this.$Message.success({
+                content: '操作成功',
+                duration: 2,
+                closable: true,
                 onClose: () => {
                   this.$emit('refreshDataList')
                 }

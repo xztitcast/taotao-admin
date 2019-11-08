@@ -20,5 +20,6 @@ export default {
   params: 'Params',
   modules: 'system manage',
   admin_user: 'user manage',
-  admin_role: 'role manage'
+  admin_role: 'role manage',
+  admin_menu: 'menu manage'
 }
