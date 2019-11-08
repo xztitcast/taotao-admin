@@ -3,7 +3,7 @@
     <i-col span="12">
       <Card>
         <div class="update-paste-con">
-          <paste-editor v-model="pasteDataArr" @on-success="handleSuccess" @on-error="handleError"/>
+          <!-- <paste-editor v-model="pasteDataArr" @on-success="handleSuccess" @on-error="handleError"/> -->
         </div>
         <div class="update-paste-btn-con">
           <span class="paste-tip">使用Tab键换列，使用回车键换行</span>
@@ -20,12 +20,12 @@
 </template>
 
 <script>
-import PasteEditor from '_c/paste-editor'
+// import PasteEditor from '_c/paste-editor'
 import { getTableDataFromArray } from '@/libs/util'
 export default {
   name: 'update_paste_page',
   components: {
-    PasteEditor
+    //PasteEditor
   },
   data () {
     return {
