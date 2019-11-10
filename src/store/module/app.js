@@ -35,6 +35,7 @@ export default {
   },
   getters: {
     menuList: (state, getters, rootState) => getMenuByRouter(routers, rootState.user.access),
+    // menuList: (state, getters, rootState) => getMenuByRouter(sessionStorage.getItem('dynamicMenuRoutes'), rootState.user.access),
     errorCount: state => state.errorList.length
   },
   mutations: {
