@@ -31,6 +31,7 @@ const showThisMenuEle = (item, access) => {
  * @returns {Array}
  */
 export const getMenuByRouter = (list, access) => {
+  console.log(list)
   let res = []
   forEach(list, item => {
     if (!item.meta || (item.meta && !item.meta.hideInMenu)) {
@@ -49,7 +50,7 @@ export const getMenuByRouter = (list, access) => {
   return res
 }
 
-export function treeDataTranslate (data, id = 'id', pid = 'parentId') {
+export function treeDataTranslate(data, id = 'id', pid = 'parentId') {
   const res = []
   const temp = {}
   for (let i = 0; i < data.length; i++) {
@@ -421,6 +422,6 @@ export const setTitle = (routeItem, vm) => {
   window.document.title = resTitle
 }
 
-export function hasPerms (key) {
+export function hasPerms(key) {
   return JSON.parse(sessionStorage.getItem('permissions') || '[]').indexOf(key) !== -1 || false
 }

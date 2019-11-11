@@ -87,10 +87,8 @@ export default {
       return list
     },
     menuList () {
-      console.log(this.$store.getters.menuList)
-      // return JSON.parse(sessionStorage.getItem('dynamicMenuRoutes'))
-      return this.$store.getters.menuList
-      // console.log(sessionStorage.getItem('dynamicMenuRoutes'))
+      //return this.$store.getters.menuList
+      return JSON.parse(sessionStorage.getItem('dynamicMenuRoutes'))
     },
     local () {
       return this.$store.state.app.local

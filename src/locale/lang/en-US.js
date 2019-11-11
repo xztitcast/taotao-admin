@@ -19,7 +19,12 @@ export default {
   query: 'Query',
   params: 'Params',
   modules: 'system manage',
-  admin_user: 'user manage',
-  admin_role: 'role manage',
-  admin_menu: 'menu manage'
+  sys_user: 'user manage',
+  sys_role: 'role manage',
+  sys_menu: 'menu manage',
+  sql_sql: 'sql manage',
+  job_schedule: 'job menage',
+  sys_config: 'config manage',
+  oss_oss: 'oss manage',
+  sys_log: 'log manage'
 }

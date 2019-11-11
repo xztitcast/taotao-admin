@@ -16,7 +16,12 @@ export default {
   query: '帶參路由',
   params: '動態路由',
   modules: '系統管理',
-  admin_user: '用戶管理',
-  admin_role: '角色管理',
-  admin_menu: '菜單管理'
+  sys_user: '用戶管理',
+  sys_role: '角色管理',
+  sys_menu: '菜單管理',
+  sql_sql: 'SQL監控',
+  job_schedule: '定時任務',
+  sys_config: '參數管理',
+  oss_oss: '文件上傳',
+  sys_log: '日誌管理'
 }

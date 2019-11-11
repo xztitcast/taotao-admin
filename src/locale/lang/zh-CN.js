@@ -19,7 +19,12 @@ export default {
   query: '带参路由',
   params: '动态路由',
   modules: '系统管理',
-  admin_user: '用户管理',
-  admin_role: '角色管理',
-  admin_menu: '菜单管理'
+  sys_user: '用户管理',
+  sys_role: '角色管理',
+  sys_menu: '菜单管理',
+  sql_sql: 'SQL监控',
+  job_schedule: '定时任务',
+  sys_config: '参数管理',
+  oss_oss: '文件上传',
+  sys_log: '日志管理'
 }
