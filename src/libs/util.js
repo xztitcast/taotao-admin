@@ -2,7 +2,8 @@ import Cookies from 'js-cookie'
 // cookie保存的天数
 import config from '@/config'
 import { forEach, hasOneOf, objEqual } from '@/libs/tools'
-const { title, cookieExpires, useI18n } = config
+
+const { title, cookieExpires } = config
 
 export const TOKEN_KEY = 'token'
 
@@ -31,7 +32,6 @@ const showThisMenuEle = (item, access) => {
  * @returns {Array}
  */
 export const getMenuByRouter = (list, access) => {
-  console.log(list)
   let res = []
   forEach(list, item => {
     if (!item.meta || (item.meta && !item.meta.hideInMenu)) {
@@ -117,15 +117,19 @@ export const getRouteTitleHandled = (route) => {
   return router
 }
 
+// export const showTitle = (item, vm) => {
+//   let { title, __titleIsFunction__ } = item.meta
+//   if (!title) return
+//   if (useI18n) {
+//     if (title.includes('{{') && title.includes('}}') && useI18n) title = title.replace(/({{[\s\S]+?}})/, (m, str) => str.replace(/{{([\s\S]*)}}/, (m, _) => vm.$t(_.trim())))
+//     else if (__titleIsFunction__) title = item.meta.title
+//     else title = vm.$t(item.name)
+//   } else title = (item.meta && item.meta.title) || item.name
+//   return title
+// }
+
 export const showTitle = (item, vm) => {
-  let { title, __titleIsFunction__ } = item.meta
-  if (!title) return
-  if (useI18n) {
-    if (title.includes('{{') && title.includes('}}') && useI18n) title = title.replace(/({{[\s\S]+?}})/, (m, str) => str.replace(/{{([\s\S]*)}}/, (m, _) => vm.$t(_.trim())))
-    else if (__titleIsFunction__) title = item.meta.title
-    else title = vm.$t(item.name)
-  } else title = (item.meta && item.meta.title) || item.name
-  return title
+  return item.meta.title
 }
 
 /**
@@ -422,6 +426,15 @@ export const setTitle = (routeItem, vm) => {
   window.document.title = resTitle
 }
 
-export function hasPerms(key) {
+export const removeComponet = (list = []) => {
+  list.forEach(e => {
+    if (e.children) {
+      removeComponet(e.children)
+    }
+    delete e.component
+  })
+}
+
+export const hasPerms = (key) => {
   return JSON.parse(sessionStorage.getItem('permissions') || '[]').indexOf(key) !== -1 || false
 }

@@ -8,10 +8,8 @@
       </FormItem>
       <FormItem>
         <Button @click="getDataList">查询</Button>
-        <!--<Button v-if="this.$hasPerms('sys:user:save')" @click="addOrUpdateHandle">新增</Button>
-        <Button v-if="this.$hasPerms('sys:user:delete')">批量删除</Button>-->
-        <Button v-if="true" @click="addOrUpdateHandle()">新增</Button>
-        <Button v-if="true" @click="removeHandle()" :disabled="idListSelect.length <= 0">批量删除</Button>
+        <Button v-if="hasPerms('sys:user:save')" @click="addOrUpdateHandle()">新增</Button>
+        <Button v-if="hasPerms('sys:user:delete')" @click="removeHandle()" :disabled="idListSelect.length <= 0">批量删除</Button>
       </FormItem>
     </Form>
     <Table border :loading="isLoading" ref="selection" :columns="columns" :data="dataList" @on-selection-change="selectionChangeHandle">
@@ -20,8 +18,8 @@
         <Tag v-else size="default" color="success">正常</Tag>
       </template>
       <template slot-scope="{ row }" slot="handle">
-        <Button type="warning" size="small" style="margin-right: 5px" @click="addOrUpdateHandle(row.userId)">修改</Button>
-        <Button type="error" size="small" @click="removeHandle(row.userId)">删除</Button>
+        <Button v-if="hasPerms('sys:user:update')" type="warning" size="small" style="margin-right: 5px" @click="addOrUpdateHandle(row.userId)">修改</Button>
+        <Button v-if="hasPerms('sys:user:delete')" type="error" size="small" @click="removeHandle(row.userId)">删除</Button>
       </template>
     </Table>
     <div>

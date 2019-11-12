@@ -1,4 +1,4 @@
-import Main from '@/components/main'
+import Main from '@/views/main'
 // import parentView from '@/components/parent-view'
 
 /**
@@ -18,7 +18,7 @@ import Main from '@/components/main'
  */
 
 export default [
-  { path: '/login', name: 'login', meta: { title: 'Login - 登录', hideInMenu: true }, component: () => import('@/view/login/login.vue') },
+  { path: '/login', name: 'login', meta: { title: 'Login - 登录', hideInMenu: true }, component: () => import('@/views/login/login.vue') },
   { path: '/',
     name: '_home',
     redirect: '/home',
@@ -37,7 +37,7 @@ export default [
           notCache: true,
           icon: 'md-home'
         },
-        component: () => import('@/view/single-page/home')
+        component: () => import('@/views/single-page/home')
       }
     ]
   },
@@ -57,7 +57,7 @@ export default [
           icon: 'ios-create',
           title: '富文本编辑器'
         },
-        component: () => import('@/view/components/editor/editor.vue')
+        component: () => import('@/views/components/editor/editor.vue')
       },
       {
         path: '/update',
@@ -66,7 +66,7 @@ export default [
           icon: 'md-cloud-upload',
           title: '数据上传'
         },
-        component: () => import('@/view/update/update-table.vue')
+        component: () => import('@/views/update/update-table.vue')
       }
     ]
   },
@@ -86,7 +86,7 @@ export default [
           icon: 'ios-people',
           title: '用户管理'
         },
-        component: () => import('@/view/modules/sys/user.vue')
+        component: () => import('@/views/modules/sys/user.vue')
       },
       {
         path: '/admin_role',
@@ -95,7 +95,7 @@ export default [
           icon: 'md-person',
           title: '角色管理'
         },
-        component: () => import('@/view/modules/sys/role.vue')
+        component: () => import('@/views/modules/sys/role.vue')
       },
       {
         path: '/admin_menu',
@@ -104,7 +104,7 @@ export default [
           icon: 'md-menu',
           title: '菜单管理'
         },
-        component: () => import('@/view/modules/sys/menu.vue')
+        component: () => import('@/views/modules/sys/menu.vue')
       }
     ]
   },
@@ -124,7 +124,7 @@ export default [
           icon: 'md-add',
           title: '导入EXCEL'
         },
-        component: () => import('@/view/excel/upload-excel.vue')
+        component: () => import('@/views/excel/upload-excel.vue')
       },
       {
         path: 'export-excel',
@@ -133,26 +133,7 @@ export default [
           icon: 'md-download',
           title: '导出EXCEL'
         },
-        component: () => import('@/view/excel/export-excel.vue')
-      }
-    ]
-  },
-  {
-    path: '/i18n',
-    name: 'i18n',
-    meta: {
-      hideInBread: true
-    },
-    component: Main,
-    children: [
-      {
-        path: 'i18n_page',
-        name: 'i18n_page',
-        meta: {
-          icon: 'md-planet',
-          title: 'i18n - {{ i18n_page }}'
-        },
-        component: () => import('@/view/i18n/i18n-page.vue')
+        component: () => import('@/views/excel/export-excel.vue')
       }
     ]
   }

@@ -4,6 +4,7 @@ import {
   getUserInfo
 } from '@/api/user'
 import { setToken, getToken } from '@/libs/util'
+import router from '@/router'
 
 export default {
   state: {
@@ -64,6 +65,8 @@ export default {
         logout(state.token).then(() => {
           commit('setToken', '')
           commit('setAccess', [])
+          sessionStorage.clear()
+          router.options.isAddDynamicMenuRoutes = false
           resolve()
         }).catch(err => {
           reject(err)

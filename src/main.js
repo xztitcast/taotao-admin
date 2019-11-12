@@ -3,7 +3,6 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import iView from 'view-design'
-import i18n from '@/locale'
 import config from '@/config'
 import httpRequest from '@/libs/api.request'
 import { hasPerms } from '@/libs/util'
@@ -17,15 +16,12 @@ Vue.config.productionTip = false
 
 Vue.prototype.$config = config
 Vue.prototype.$http = httpRequest
-Vue.prototype.$hasPerms = hasPerms
+Vue.prototype.hasPerms = hasPerms
 
-Vue.use(iView, {
-  i18n: (key, value) => i18n.t(key, value)
-})
+Vue.use(iView)
 
 new Vue({
   router,
-  i18n,
   store,
   render: h => h(App)
 }).$mount('#app')
