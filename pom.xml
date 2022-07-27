@@ -12,6 +12,7 @@
   <description>滔滔后台管理</description>
   <properties>
 		<java.version>11</java.version>
+		<docker.registry>docker.io</docker.registry>
   </properties>
   <dependencies>
   	<dependency>
@@ -125,24 +126,31 @@
   			<version>0.40.1</version>
   			<configuration>
   				<authConfig>
-  					<username></username>
-  					<password></password>
+  					<username>xzt1997</username>
+  					<password>jiushi123</password>
   				</authConfig>
-  				<pushRegistry>http://${docker.registry}</pushRegistry>
+  				<dockerHost>tcp://192.168.25.103:2375</dockerHost>
+  				<buildArgs>
+  					<JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+  				</buildArgs>
   				<images>
   					<image>
-  						<name>${docker.registry}/java/${project.name}:${project.version}</name>
+  						<name>${docker.registry}/${project.name}:${project.version}</name>
+  						<build>
+  							<dockerFileDir>${project.basedir}/docker</dockerFileDir>
+  						</build>
+  						<!-- <external>
+  						<basedir>${project.basedir}/docker</basedir>
+  						<composeFile>docker-compose.yml</composeFile>
+  					</external> -->
   					</image>
-  					<build>
-  						<docerFileDir>${project.basedir}</docerFileDir>
-  					</build>
   				</images>
   			</configuration>
   			<executions>
   				<execution>
   					<id>docker-exec</id>
                  	<!-- 绑定mvn install阶段，当执行mvn install时 就会执行docker build 和docker push-->
-                	<phase>install</phase>
+                	<phase>package</phase>
                 	<goals>
                     	<goal>build</goal>
                     	<goal>push</goal>
