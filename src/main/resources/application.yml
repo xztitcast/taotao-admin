@@ -11,9 +11,12 @@ spring:
     timeout-per-shutdown-phase: 30S
   application:
     name: ticket-admin
-  profiles:
-    active:
-    - dev
+  config:
+    activate:
+      on-profile:
+      - dev
+      - test
+      - prod
   jackson:
     time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss

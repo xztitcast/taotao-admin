@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE xml>
+<configuration>  
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+	<springProperty scope="context" name="LOG_NAME" source="spring.application.name"/>
+    <property name="LOG_HOME" value="logs" />
+    <property name="LOG_BACK" value="back" />
+    <springProfile name="dev">
+    	<root level="INFO">
+        	<appender-ref ref="CONSOLE" />
+    	</root>
+    </springProfile>
+    
+    <springProfile name="!dev">
+    	<appender name="FILE"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+	        <file>${LOG_HOME}/${LOG_NAME}.log</file>
+	        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+	            <FileNamePattern>${LOG_HOME}/${LOG_BACK}/${LOG_NAME}.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+	            <MaxHistory>30</MaxHistory>
+	            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+					<maxFileSize>100MB</maxFileSize>
+				</timeBasedFileNamingAndTriggeringPolicy>
+	        </rollingPolicy>
+	        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+	            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{100} - %msg%n</pattern>
+	        </encoder>
+    	</appender>
+    	<root level="INFO">
+        	<appender-ref ref="FILE" />
+    	</root>
+    </springProfile>
+</configuration>

@@ -119,6 +119,37 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-maven-plugin</artifactId>
 		</plugin>
+		<plugin>
+			<groupId>io.fabric8</groupId>
+  			<artifactId>docker-maven-plugin</artifactId>
+  			<version>0.40.1</version>
+  			<configuration>
+  				<authConfig>
+  					<username></username>
+  					<password></password>
+  				</authConfig>
+  				<pushRegistry>http://${docker.registry}</pushRegistry>
+  				<images>
+  					<image>
+  						<name>${docker.registry}/java/${project.name}:${project.version}</name>
+  					</image>
+  					<build>
+  						<docerFileDir>${project.basedir}</docerFileDir>
+  					</build>
+  				</images>
+  			</configuration>
+  			<executions>
+  				<execution>
+  					<id>docker-exec</id>
+                 	<!-- 绑定mvn install阶段，当执行mvn install时 就会执行docker build 和docker push-->
+                	<phase>install</phase>
+                	<goals>
+                    	<goal>build</goal>
+                    	<goal>push</goal>
+                	</goals>
+  				</execution>
+  			</executions>
+		</plugin>
 	</plugins>
   </build>
 </project>

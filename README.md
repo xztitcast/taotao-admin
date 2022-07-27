@@ -6,24 +6,30 @@
   vue2.0+elementUI
   前端项目名称: admin-element
 # 代码结构
+```
   controller:
   	Sys直接开头为后台管理系统提供(框架本身结构)
   	app目录下为基础应用提供
   	editor目录需要上传下载时使用
   	当需要编写业务时直接新建目录
   提示: 控制器必须以Sys开头, requestMapping必须以/sys开头
-
+```
+```
   Service:
    	业务接口实现
   提示: 业务接口实现必须extends ServiceImpl implements IService才能调用数据库
-  
+```
+```  
   entity:
     excel: excel表实体映射
     form: 前后台端参数映射
     数据ORM实体映射
-  
+```
+```  
   Mapper:
-  	数据库Mapper接口
+  	数据库Mapper接口,必须 extends BaseMapper
+  	mybatis-plus提供基础数据的操作、需要自定操作可以新建mapper.xml文件编写sql在对应Mapper中定义方法
+```
 # shiro板块
 ```
   使用shiro进行后台管理权限认证、本质就是使用token进行赋权
@@ -43,4 +49,9 @@
 # editor
 ```
   上传、下载功能以及富文本编辑
+```
+# 相关链接
+```
+  mybatis-plus官方文档: https://baomidou.com/
+  elementUI官方文档: https://element.eleme.cn/
 ```
