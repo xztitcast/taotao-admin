@@ -1,0 +1,339 @@
+-- 菜单
+CREATE TABLE `sys_menu`  (
+  `menu_id` bigint NOT NULL AUTO_INCREMENT,
+  `parent_id` bigint NULL DEFAULT NULL COMMENT '父菜单ID，一级菜单为0',
+  `name` varchar(50) CHARACTER SET utf8 NULL DEFAULT NULL COMMENT '菜单名称',
+  `url` varchar(200) CHARACTER SET utf8 NULL DEFAULT NULL COMMENT '菜单URL',
+  `perms` varchar(500) CHARACTER SET utf8 NULL DEFAULT NULL COMMENT '授权(多个用逗号分隔，如：user:list,user:create)',
+  `type` int NULL DEFAULT NULL COMMENT '类型   0：目录   1：菜单   2：按钮',
+  `icon` varchar(50) CHARACTER SET utf8 NULL DEFAULT NULL COMMENT '菜单图标',
+  `sort_num` int NULL DEFAULT '0' COMMENT '排序',
+  PRIMARY KEY (`menu_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COMMENT = '菜单管理';
+
+-- 系统用户
+CREATE TABLE `sys_user` (
+  `user_id` bigint NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) NOT NULL COMMENT '用户名',
+  `password` varchar(100) COMMENT '密码',
+  `salt` varchar(20) COMMENT '盐',
+  `status` tinyint COMMENT '状态  0：禁用   1：正常',
+  `adder` bigint(20) COMMENT '创建者ID',
+  `avatar` varchar(255) COMMENT '头像',
+  `created` datetime COMMENT '创建时间',
+  PRIMARY KEY (`user_id`),
+  UNIQUE INDEX (`username`)
+) ENGINE=`InnoDB` DEFAULT CHARACTER SET utf8 COMMENT = '系统用户';
+
+-- 角色
+CREATE TABLE `sys_role` (
+  `role_id` bigint NOT NULL AUTO_INCREMENT,
+  `role_name` varchar(100) COMMENT '角色名称',
+  `remark` varchar(100) COMMENT '备注',
+  `adder` bigint(20) COMMENT '创建者ID',
+  `created` datetime COMMENT '创建时间',
+  PRIMARY KEY (`role_id`)
+) ENGINE=`InnoDB` DEFAULT CHARACTER SET utf8 COMMENT = '角色';
+
+-- 用户与角色对应关系
+CREATE TABLE `sys_user_role` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint COMMENT '用户ID',
+  `role_id` bigint COMMENT '角色ID',
+  PRIMARY KEY (`id`)
+) ENGINE=`InnoDB` DEFAULT CHARACTER SET utf8 COMMENT = '用户与角色对应关系';
+
+-- 角色与菜单对应关系
+CREATE TABLE `sys_role_menu` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `role_id` bigint COMMENT '角色ID',
+  `menu_id` bigint COMMENT '菜单ID',
+  PRIMARY KEY (`id`)
+) ENGINE=`InnoDB` DEFAULT CHARACTER SET utf8 COMMENT = '角色与菜单对应关系';
+
+-- 系统日志
+CREATE TABLE `sys_log` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `username` varchar(50) COMMENT '用户名',
+  `operation` varchar(50) COMMENT '用户操作',
+  `method` varchar(200) COMMENT '请求方法',
+  `params` text DEFAULT NULL COMMENT '请求参数',
+  `time` bigint NOT NULL COMMENT '执行时长(毫秒)',
+  `ip` varchar(64) COMMENT 'IP地址',
+  `created` datetime COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=`InnoDB` DEFAULT CHARACTER SET utf8 COMMENT = '系统日志';
+
+-- 定时任务
+CREATE TABLE `sys_schedule` (
+  `job_id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '任务id',
+  `bean_name` varchar(200) DEFAULT NULL COMMENT 'spring bean名称',
+  `method_name` varchar(100) DEFAULT NULL COMMENT '方法名',
+  `params` varchar(2000) DEFAULT NULL COMMENT '参数',
+  `cron` varchar(100) DEFAULT NULL COMMENT 'cron表达式',
+  `status` tinyint(4) DEFAULT NULL COMMENT '任务状态  0：正常  1：暂停',
+  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+  `created` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`job_id`)
+) ENGINE=`InnoDB` DEFAULT CHARACTER SET utf8 COMMENT = '定时任务';
+
+-- 系统配置信息
+CREATE TABLE `tb_config` (
+	`id` bigint NOT NULL AUTO_INCREMENT,
+	`param_key` varchar(50) COMMENT 'key',
+	`param_name` varchar(100) COMMENT 'name',
+	`param_val` varchar(2000) COMMENT 'value',
+	`remark` varchar(500) COMMENT '备注',
+	`created` datetime COMMENT '创建时间',
+	PRIMARY KEY (`id`),
+	UNIQUE INDEX (`param_key`)
+) ENGINE=`InnoDB` DEFAULT CHARACTER SET utf8 COMMENT = '系统配置信息表';
+
+CREATE TABLE `tb_storage`(
+	`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '主键ID',
+	`name` varchar(10) NOT NULL UNIQUE COMMENT '存储商名称',
+	`domain` varchar(100) NOT NULL COMMENT '域名',
+	`point` varchar(50) NOT NULL COMMENT '端点',
+	`bucket` varchar(30) NOT NULL COMMENT '桶',
+	`prefix` varchar(15) NOT NULL COMMENT '前缀目录',
+	`access_key` varchar(100) NOT NULL COMMENT '存储商提供的KEY',
+	`secret_key` varchar(100) NOT NULL COMMENT '存储商提供的secret',
+	`created` datetime DEFAULT NULL COMMENT '创建时间'
+)ENGINE=InnoDB DEFAULT CHARACTER SET  utf8 COMMENT ='OSS存储表';
+
+CREATE TABLE `tb_version`(
+	`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '主键ID',
+	`v` varchar(10) NOT NULL COMMENT '版本(1.0.0)',
+	`is_compel` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否强升(0:否, 1:是)',
+	`status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否发布(0:否, 1:是)',
+	`platform` tinyint(4) NOT NULL DEFAULT '1' COMMENT '平台(1:安卓, 2:IOS, 3:其他)',
+	`url` varchar(100) NOT NULL COMMENT '下载地址',
+	`remark` text DEFAULT NULL COMMENT '备注',
+	`created` datetime DEFAULT NULL COMMENT '创建时间',
+	INDEX (`platform`)
+)ENGINE=InnoDB DEFAULT CHARACTER SET utf8 COMMENT = '版本控制表';
+	
+CREATE TABLE `tb_banner`(
+	`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT '主键ID',
+	`url` varchar(100) NOT NULL COMMENT '图片地址',
+	`content` text DEFAULT NULL COMMENT '图片内容',
+	`is_show` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否显示(0: 否, 1:是)',
+	`sort_num` int NULL DEFAULT '0' COMMENT '排序',
+	`created` datetime DEFAULT NULL COMMENT '创建时间'
+)ENGINE=InnoDB DEFAULT CHARACTER SET utf8 COMMENT = 'banner轮播表';
+
+-- ----------------------------
+-- Records of sys_menu
+-- ----------------------------
+INSERT INTO `sys_menu` VALUES (1, 0, '系统管理', 'modules', NULL, 0, 'system', 0);
+INSERT INTO `sys_menu` VALUES (2, 1, '管理员列表', 'sys/user', NULL, 1, 'admin', 1);
+INSERT INTO `sys_menu` VALUES (3, 1, '角色管理', 'sys/role', NULL, 1, 'role', 2);
+INSERT INTO `sys_menu` VALUES (4, 1, '菜单管理', 'sys/menu', NULL, 1, 'menu', 3);
+INSERT INTO `sys_menu` VALUES (5, 1, '定时任务', 'sys/schedule', NULL, 1, 'job', 4);
+INSERT INTO `sys_menu` VALUES (6, 1, '系统日志', 'sys/log', NULL, 1, 'log', 5);
+INSERT INTO `sys_menu` VALUES (7, 2, '查看', NULL, 'sys:user:list,sys:user:info', 2, 'sousuo', 0);
+INSERT INTO `sys_menu` VALUES (8, 2, '新增', NULL, 'sys:user:save,sys:role:select', 2, 'add', 0);
+INSERT INTO `sys_menu` VALUES (9, 2, '修改', NULL, 'sys:user:update,sys:role:select', 2, 'bianji', 0);
+INSERT INTO `sys_menu` VALUES (10, 2, '删除', NULL, 'sys:user:delete', 2, 'shanchu', 0);
+INSERT INTO `sys_menu` VALUES (11, 3, '查看', NULL, 'sys:role:list,sys:role:info', 2, 'sousuo', 0);
+INSERT INTO `sys_menu` VALUES (12, 3, '新增', NULL, 'sys:role:save,sys:menu:list', 2, 'add', 0);
+INSERT INTO `sys_menu` VALUES (13, 3, '修改', NULL, 'sys:role:update,sys:menu:list', 2, 'bianji', 0);
+INSERT INTO `sys_menu` VALUES (14, 3, '删除', NULL, 'sys:role:delete', 2, 'shanchu', 0);
+INSERT INTO `sys_menu` VALUES (15, 4, '查看', NULL, 'sys:menu:list,sys:menu:info', 2, 'sousuo', 0);
+INSERT INTO `sys_menu` VALUES (16, 4, '新增', NULL, 'sys:menu:save,sys:menu:select', 2, 'add', 0);
+INSERT INTO `sys_menu` VALUES (17, 4, '修改', NULL, 'sys:menu:update,sys:menu:select', 2, 'bianji', 0);
+INSERT INTO `sys_menu` VALUES (18, 4, '删除', NULL, 'sys:menu:delete', 2, 'shanchu', 0);
+INSERT INTO `sys_menu` VALUES (19, 5, '查看', NULL, 'sys:schedule:list,sys:schedule:info', 2, 'sousuo', 0);
+INSERT INTO `sys_menu` VALUES (20, 5, '新增', NULL, 'sys:schedule:save', 2, 'add', 0);
+INSERT INTO `sys_menu` VALUES (21, 5, '修改', NULL, 'sys:schedule:update', 2, 'bianji', 0);
+INSERT INTO `sys_menu` VALUES (22, 5, '删除', NULL, 'sys:schedule:delete', 2, 'shanchu', 0);
+INSERT INTO `sys_menu` VALUES (23, 5, '暂停', NULL, 'sys:schedule:pause', 2, 'zanting', 0);
+INSERT INTO `sys_menu` VALUES (24, 5, '恢复', NULL, 'sys:schedule:resume', 2, 'bofang', 0);
+INSERT INTO `sys_menu` VALUES (25, 5, '立即执行', NULL, 'sys:schedule:run', 2, 'shuaxin', 0);
+INSERT INTO `sys_menu` VALUES (26, 6, '查看', NULL, 'sys:log:list', 2, 'sousuo', 0);
+INSERT INTO `sys_menu` VALUES (27, 6, '导出', NULL, 'sys:log:export', 2, 'xiazai', 0);
+INSERT INTO `sys_menu` VALUES (28, 0, 'APP管理', 'modules', NULL, 0, 'zonghe', 1);
+INSERT INTO `sys_menu` VALUES (29, 28, '参数管理', 'app/config', NULL, 1, 'config', 1);
+INSERT INTO `sys_menu` VALUES (30, 28, 'banner轮播', 'app/banner', NULL, 1, 'tubiao', 2);
+INSERT INTO `sys_menu` VALUES (31, 28, '云存储', 'app/oss', NULL, 1, 'oss', 4);
+INSERT INTO `sys_menu` VALUES (32, 28, '版本管理', 'app/version', NULL, 1, 'daohang', 5);
+INSERT INTO `sys_menu` VALUES (33, 29, '查看', NULL, 'sys:config:list,sys:config:info', 2, 'sousuo', 0);
+INSERT INTO `sys_menu` VALUES (34, 29, '新增', NULL, 'sys:config:save', 2, 'add', 0);
+INSERT INTO `sys_menu` VALUES (35, 29, '修改', NULL, 'sys:config:update', 2, 'bianji', 0);
+INSERT INTO `sys_menu` VALUES (36, 29, '删除', NULL, 'sys:config:delete', 2, 'shanchu', 0);
+INSERT INTO `sys_menu` VALUES (37, 30, '查看', NULL, 'sys:banner:list,sys:banner:info', 2, 'sousuo', 0);
+INSERT INTO `sys_menu` VALUES (38, 30, '新增', NULL, 'sys:banner:save', 2, 'add', 0);
+INSERT INTO `sys_menu` VALUES (39, 30, '修改', NULL, 'sys:banner:update', 2, 'bianji', 0);
+INSERT INTO `sys_menu` VALUES (40, 30, '删除', NULL, 'sys:banner:delete', 2, 'shanchu', 0);
+INSERT INTO `sys_menu` VALUES (41, 31, '查看', NULL, 'sys:oss:list,sys:oss:info,sys:oss:select', 2, 'sousuo', 0);
+INSERT INTO `sys_menu` VALUES (42, 31, '新增', NULL, 'sys:oss:save', 2, 'add', 0);
+INSERT INTO `sys_menu` VALUES (43, 31, '修改', NULL, 'sys:oss:update', 2, 'bianji', 0);
+INSERT INTO `sys_menu` VALUES (44, 31, '删除', NULL, 'sys:oss:delete', 2, 'shanchu', 0);
+INSERT INTO `sys_menu` VALUES (45, 32, '查看', NULL, 'sys:version:list,sys:version:info', 2, 'sousuo', 0);
+INSERT INTO `sys_menu` VALUES (46, 32, '新增', NULL, 'sys:version:save', 2, 'add', 0);
+INSERT INTO `sys_menu` VALUES (47, 32, '修改', NULL, 'sys:version:update', 2, 'bianji', 0);
+INSERT INTO `sys_menu` VALUES (48, 32, '删除', NULL, 'sys:version:delete', 2, 'shanchu', 0);
+
+-- 初始数据
+-- icon字段的数据属于iview框架额图标如果使用的是element-ui框架请自行更换图标
+INSERT INTO `sys_user` (`user_id`, `username`, `password`, `salt`, `status`, `adder`, `created`) VALUES ('1', 'admin', '9ec9750e709431dad22365cabc5c625482e574c74adaebba7dd02f1129e4ce1d', 'YzcmCZNvbXocrsz9dm8e', '0', '1', '2016-11-11 11:11:11');
+INSERT INTO `sys_schedule` (`bean_name`, `method_name`, `params`, `cron`, `status`, `remark`, `created`) VALUES ('testTask', 'test', NULL, '0 0/30 * * * ?', '0', '参数测试', now());
+
+--  quartz自带表结构
+CREATE TABLE QRTZ_JOB_DETAILS(
+SCHED_NAME VARCHAR(120) NOT NULL,
+JOB_NAME VARCHAR(200) NOT NULL,
+JOB_GROUP VARCHAR(200) NOT NULL,
+DESCRIPTION VARCHAR(250) NULL,
+JOB_CLASS_NAME VARCHAR(250) NOT NULL,
+IS_DURABLE VARCHAR(1) NOT NULL,
+IS_NONCONCURRENT VARCHAR(1) NOT NULL,
+IS_UPDATE_DATA VARCHAR(1) NOT NULL,
+REQUESTS_RECOVERY VARCHAR(1) NOT NULL,
+JOB_DATA BLOB NULL,
+PRIMARY KEY (SCHED_NAME,JOB_NAME,JOB_GROUP))
+ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE QRTZ_TRIGGERS (
+SCHED_NAME VARCHAR(120) NOT NULL,
+TRIGGER_NAME VARCHAR(200) NOT NULL,
+TRIGGER_GROUP VARCHAR(200) NOT NULL,
+JOB_NAME VARCHAR(200) NOT NULL,
+JOB_GROUP VARCHAR(200) NOT NULL,
+DESCRIPTION VARCHAR(250) NULL,
+NEXT_FIRE_TIME BIGINT(13) NULL,
+PREV_FIRE_TIME BIGINT(13) NULL,
+PRIORITY INTEGER NULL,
+TRIGGER_STATE VARCHAR(16) NOT NULL,
+TRIGGER_TYPE VARCHAR(8) NOT NULL,
+START_TIME BIGINT(13) NOT NULL,
+END_TIME BIGINT(13) NULL,
+CALENDAR_NAME VARCHAR(200) NULL,
+MISFIRE_INSTR SMALLINT(2) NULL,
+JOB_DATA BLOB NULL,
+PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),
+FOREIGN KEY (SCHED_NAME,JOB_NAME,JOB_GROUP)
+REFERENCES QRTZ_JOB_DETAILS(SCHED_NAME,JOB_NAME,JOB_GROUP))
+ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE QRTZ_SIMPLE_TRIGGERS (
+SCHED_NAME VARCHAR(120) NOT NULL,
+TRIGGER_NAME VARCHAR(200) NOT NULL,
+TRIGGER_GROUP VARCHAR(200) NOT NULL,
+REPEAT_COUNT BIGINT(7) NOT NULL,
+REPEAT_INTERVAL BIGINT(12) NOT NULL,
+TIMES_TRIGGERED BIGINT(10) NOT NULL,
+PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),
+FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
+REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP))
+ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE QRTZ_CRON_TRIGGERS (
+SCHED_NAME VARCHAR(120) NOT NULL,
+TRIGGER_NAME VARCHAR(200) NOT NULL,
+TRIGGER_GROUP VARCHAR(200) NOT NULL,
+CRON_EXPRESSION VARCHAR(120) NOT NULL,
+TIME_ZONE_ID VARCHAR(80),
+PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),
+FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
+REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP))
+ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE QRTZ_SIMPROP_TRIGGERS
+  (          
+    SCHED_NAME VARCHAR(120) NOT NULL,
+    TRIGGER_NAME VARCHAR(200) NOT NULL,
+    TRIGGER_GROUP VARCHAR(200) NOT NULL,
+    STR_PROP_1 VARCHAR(512) NULL,
+    STR_PROP_2 VARCHAR(512) NULL,
+    STR_PROP_3 VARCHAR(512) NULL,
+    INT_PROP_1 INT NULL,
+    INT_PROP_2 INT NULL,
+    LONG_PROP_1 BIGINT NULL,
+    LONG_PROP_2 BIGINT NULL,
+    DEC_PROP_1 NUMERIC(13,4) NULL,
+    DEC_PROP_2 NUMERIC(13,4) NULL,
+    BOOL_PROP_1 VARCHAR(1) NULL,
+    BOOL_PROP_2 VARCHAR(1) NULL,
+    PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),
+    FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP) 
+    REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP))
+ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE QRTZ_BLOB_TRIGGERS (
+SCHED_NAME VARCHAR(120) NOT NULL,
+TRIGGER_NAME VARCHAR(200) NOT NULL,
+TRIGGER_GROUP VARCHAR(200) NOT NULL,
+BLOB_DATA BLOB NULL,
+PRIMARY KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP),
+INDEX (SCHED_NAME,TRIGGER_NAME, TRIGGER_GROUP),
+FOREIGN KEY (SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP)
+REFERENCES QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP))
+ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE QRTZ_CALENDARS (
+SCHED_NAME VARCHAR(120) NOT NULL,
+CALENDAR_NAME VARCHAR(200) NOT NULL,
+CALENDAR BLOB NOT NULL,
+PRIMARY KEY (SCHED_NAME,CALENDAR_NAME))
+ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE QRTZ_PAUSED_TRIGGER_GRPS (
+SCHED_NAME VARCHAR(120) NOT NULL,
+TRIGGER_GROUP VARCHAR(200) NOT NULL,
+PRIMARY KEY (SCHED_NAME,TRIGGER_GROUP))
+ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE QRTZ_FIRED_TRIGGERS (
+SCHED_NAME VARCHAR(120) NOT NULL,
+ENTRY_ID VARCHAR(95) NOT NULL,
+TRIGGER_NAME VARCHAR(200) NOT NULL,
+TRIGGER_GROUP VARCHAR(200) NOT NULL,
+INSTANCE_NAME VARCHAR(200) NOT NULL,
+FIRED_TIME BIGINT(13) NOT NULL,
+SCHED_TIME BIGINT(13) NOT NULL,
+PRIORITY INTEGER NOT NULL,
+STATE VARCHAR(16) NOT NULL,
+JOB_NAME VARCHAR(200) NULL,
+JOB_GROUP VARCHAR(200) NULL,
+IS_NONCONCURRENT VARCHAR(1) NULL,
+REQUESTS_RECOVERY VARCHAR(1) NULL,
+PRIMARY KEY (SCHED_NAME,ENTRY_ID))
+ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE QRTZ_SCHEDULER_STATE (
+SCHED_NAME VARCHAR(120) NOT NULL,
+INSTANCE_NAME VARCHAR(200) NOT NULL,
+LAST_CHECKIN_TIME BIGINT(13) NOT NULL,
+CHECKIN_INTERVAL BIGINT(13) NOT NULL,
+PRIMARY KEY (SCHED_NAME,INSTANCE_NAME))
+ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE QRTZ_LOCKS (
+SCHED_NAME VARCHAR(120) NOT NULL,
+LOCK_NAME VARCHAR(40) NOT NULL,
+PRIMARY KEY (SCHED_NAME,LOCK_NAME))
+ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE INDEX IDX_QRTZ_J_REQ_RECOVERY ON QRTZ_JOB_DETAILS(SCHED_NAME,REQUESTS_RECOVERY);
+CREATE INDEX IDX_QRTZ_J_GRP ON QRTZ_JOB_DETAILS(SCHED_NAME,JOB_GROUP);
+
+CREATE INDEX IDX_QRTZ_T_J ON QRTZ_TRIGGERS(SCHED_NAME,JOB_NAME,JOB_GROUP);
+CREATE INDEX IDX_QRTZ_T_JG ON QRTZ_TRIGGERS(SCHED_NAME,JOB_GROUP);
+CREATE INDEX IDX_QRTZ_T_C ON QRTZ_TRIGGERS(SCHED_NAME,CALENDAR_NAME);
+CREATE INDEX IDX_QRTZ_T_G ON QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_GROUP);
+CREATE INDEX IDX_QRTZ_T_STATE ON QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_STATE);
+CREATE INDEX IDX_QRTZ_T_N_STATE ON QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP,TRIGGER_STATE);
+CREATE INDEX IDX_QRTZ_T_N_G_STATE ON QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_GROUP,TRIGGER_STATE);
+CREATE INDEX IDX_QRTZ_T_NEXT_FIRE_TIME ON QRTZ_TRIGGERS(SCHED_NAME,NEXT_FIRE_TIME);
+CREATE INDEX IDX_QRTZ_T_NFT_ST ON QRTZ_TRIGGERS(SCHED_NAME,TRIGGER_STATE,NEXT_FIRE_TIME);
+CREATE INDEX IDX_QRTZ_T_NFT_MISFIRE ON QRTZ_TRIGGERS(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME);
+CREATE INDEX IDX_QRTZ_T_NFT_ST_MISFIRE ON QRTZ_TRIGGERS(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME,TRIGGER_STATE);
+CREATE INDEX IDX_QRTZ_T_NFT_ST_MISFIRE_GRP ON QRTZ_TRIGGERS(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME,TRIGGER_GROUP,TRIGGER_STATE);
+
+CREATE INDEX IDX_QRTZ_FT_TRIG_INST_NAME ON QRTZ_FIRED_TRIGGERS(SCHED_NAME,INSTANCE_NAME);
+CREATE INDEX IDX_QRTZ_FT_INST_JOB_REQ_RCVRY ON QRTZ_FIRED_TRIGGERS(SCHED_NAME,INSTANCE_NAME,REQUESTS_RECOVERY);
+CREATE INDEX IDX_QRTZ_FT_J_G ON QRTZ_FIRED_TRIGGERS(SCHED_NAME,JOB_NAME,JOB_GROUP);
+CREATE INDEX IDX_QRTZ_FT_JG ON QRTZ_FIRED_TRIGGERS(SCHED_NAME,JOB_GROUP);
+CREATE INDEX IDX_QRTZ_FT_T_G ON QRTZ_FIRED_TRIGGERS(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP);
+CREATE INDEX IDX_QRTZ_FT_TG ON QRTZ_FIRED_TRIGGERS(SCHED_NAME,TRIGGER_GROUP);

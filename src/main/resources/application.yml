@@ -1,0 +1,63 @@
+server:
+  port: 8080
+  tomcat:
+    uri-encoding: UTF-8
+  servlet:
+    context-path: /
+  shutdown: graceful #使用kill -2 $pid停止程序
+  
+spring:
+  lifecycle:
+    timeout-per-shutdown-phase: 30S
+  application:
+    name: ticket-admin
+  profiles:
+    active:
+    - dev
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+    default-property-inclusion: non-null
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: never
+    scheduler-name: taotao
+    startup-delay: 60s
+    auto-startup: true
+    overwrite-existing-jobs: true
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: taotao
+            instanceId: AUTO
+          jobStore:
+            isClustered: false
+            tablePrefix: qrtz_
+            misfireThreshold: 60000
+            clusterCheckinInterval: 15000
+            maxMisfiresToHandleAtATime: 1
+            class: org.springframework.scheduling.quartz.LocalDataSourceJobStore
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+          threadPool:
+            threadCount: 20
+            threadPriority: 5
+            class: org.quartz.simpl.SimpleThreadPool
+            
+mybatis-plus:
+  mapper-locations:
+  - classpath:mapper/**/*.xml
+  typeAliasesPackage: com.taotao.admin.entity
+  global-config:
+    banner: false
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    call-setters-on-nulls: true
+    jdbc-type-for-null: 'null'
