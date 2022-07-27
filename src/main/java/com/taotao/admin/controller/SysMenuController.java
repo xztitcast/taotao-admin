@@ -123,7 +123,7 @@ public class SysMenuController extends BaseController {
 	@PostMapping("/delete/{menuId}")
 	@RequiresPermissions("sys:menu:delete")
 	public R delete(@PathVariable("menuId") long menuId){
-		if(menuId <= 31){
+		if(menuId <= 48){
 			return R.error("系统框架菜单不能被删除!");
 		}
 
