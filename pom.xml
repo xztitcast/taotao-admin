@@ -7,12 +7,12 @@
   </parent>
   <groupId>com.taotao</groupId>
   <artifactId>taotao-admin</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <name>taotao-admin</name>
   <description>滔滔后台管理</description>
   <properties>
 		<java.version>11</java.version>
-		<docker.registry>docker.io</docker.registry>
+		<docker.registry>registry.cn-shenzhen.aliyuncs.com</docker.registry>
   </properties>
   <dependencies>
   	<dependency>
@@ -126,7 +126,7 @@
   			<version>0.40.1</version>
   			<configuration>
   				<authConfig>
-  					<username>xzt1997</username>
+  					<username>15118819552</username>
   					<password>jiushi123</password>
   				</authConfig>
   				<dockerHost>tcp://192.168.25.103:2375</dockerHost>
@@ -135,14 +135,15 @@
   				</buildArgs>
   				<images>
   					<image>
-  						<name>${docker.registry}/${project.name}:${project.version}</name>
+  						<name>eden_images/java:${project.name}-${project.version}</name>
+  						<registry>${docker.registry}</registry>
   						<build>
-  							<dockerFileDir>${project.basedir}/docker</dockerFileDir>
+  							<dockerFileDir>${project.basedir}</dockerFileDir>
   						</build>
   						<!-- <external>
   						<basedir>${project.basedir}/docker</basedir>
   						<composeFile>docker-compose.yml</composeFile>
-  					</external> -->
+  						</external> -->
   					</image>
   				</images>
   			</configuration>
