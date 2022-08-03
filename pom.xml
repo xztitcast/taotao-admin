@@ -12,7 +12,7 @@
   <description>滔滔后台管理</description>
   <properties>
 		<java.version>11</java.version>
-		<docker.registry>registry.cn-shenzhen.aliyuncs.com</docker.registry>
+		<docker.registry>192.168.25.103</docker.registry>
   </properties>
   <dependencies>
   	<dependency>
@@ -121,6 +121,40 @@
 			<artifactId>spring-boot-maven-plugin</artifactId>
 		</plugin>
 		<plugin>
+			<groupId>com.spotify</groupId>
+  			<artifactId>docker-maven-plugin</artifactId>
+  			<version>1.2.2</version>
+  			<configuration>
+  				<imageName>${docker.registry}/eden/${project.artifactId}:${project.version}</imageName>
+  				<dockerDirectory>${project.basedir}</dockerDirectory>
+  				<dockerHost>http://192.168.25.103:2375</dockerHost>
+  				<resources>
+                    <resource>
+                        <targetPath>/</targetPath>
+                        <directory>${project.build.directory}</directory>
+                        <include>${project.build.finalName}.jar</include>
+                    </resource>
+                </resources>
+                <!-- 指定docker打包后推送的镜像仓库地址，对应settings.xml文件中配置的id -->
+                <serverId>harbor</serverId>
+                <registryUrl>${docker.registry}</registryUrl>
+                <pushImage>true</pushImage>
+		        <buildArgs>
+		            <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+		        </buildArgs>
+  			</configuration>
+  			<executions>
+  				<execution>
+  					<id>docker-exec</id>
+                	<phase>package</phase>
+                	<goals>
+                    	<goal>build</goal>
+                    	<goal>push</goal>
+                	</goals>
+  				</execution>
+  			</executions>
+		</plugin>
+		<!--<plugin>
 			<groupId>io.fabric8</groupId>
   			<artifactId>docker-maven-plugin</artifactId>
   			<version>0.40.1</version>
@@ -140,17 +174,16 @@
   						<build>
   							<dockerFileDir>${project.basedir}</dockerFileDir>
   						</build>
-  						<!-- <external>
+  						<external>
   						<basedir>${project.basedir}/docker</basedir>
   						<composeFile>docker-compose.yml</composeFile>
-  						</external> -->
+  						</external>
   					</image>
   				</images>
   			</configuration>
   			<executions>
   				<execution>
   					<id>docker-exec</id>
-                 	<!-- 绑定mvn install阶段，当执行mvn install时 就会执行docker build 和docker push-->
                 	<phase>package</phase>
                 	<goals>
                     	<goal>build</goal>
@@ -158,7 +191,7 @@
                 	</goals>
   				</execution>
   			</executions>
-		</plugin>
+		</plugin>  --> 
 	</plugins>
   </build>
 </project>
