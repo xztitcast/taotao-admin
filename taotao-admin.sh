@@ -28,9 +28,9 @@ checkpid(){
   javaps=`$JAVA_HOME/bin/jps -l |grep $JAVA_JAR`
 
   if [ -n "$javaps" ];then
-    psid=`echo $javaps |awk '{print $1}'`
+     psid=`echo $javaps |awk '{print $1}'`
   else
-    psid=0
+     psid=0
   fi
 }
 
@@ -40,47 +40,54 @@ checkpid(){
 start(){
   checkpid
   
-  if [ $pid -ne 0 ];then
-    echo "================================"
-    echo "warn: $JAVA_JAR already started! (pid=$psid)"
-    echo "================================"
+  if [ $psid -ne 0 ];then
+     echo "================================"
+     echo "warn: $JAVA_JAR already started! (pid=$psid)"
+     echo "================================"
   else
-    echo -n "Starting $JAVA_JAR"
-    JAVA_CMD="nohup $JAVA_HOME/bin/java $JAVA_OPTS -jar $JAVA_JAR --spring.config.activate.on-profile=prod >/dev/null 2>&1 &"
-    su - $RUNNING_USER -c "$JAVA_CMD"
-    checkpid
-    if [ $psid -ne 0 ];then
-      echo "(pid=$psid) [OK]"
-    else
-      echo "[Failed]"
-    fi
+     echo -n "Starting $JAVA_JAR"
+     JAVA_CMD="nohup $JAVA_HOME/bin/java $JAVA_OPTS -jar $JAVA_JAR --spring.config.activate.on-profile=prod >/dev/null 2>&1 &"
+     su - $RUNNING_USER -c "$JAVA_CMD"
+     checkpid
+     if [ $psid -ne 0 ];then
+        echo "(pid=$psid) [OK]"
+     else
+        echo "[Failed]"
+     fi
   fi
 }
 
 #####################################################
 #停止程序
+num=0
 
 stop(){
   checkpid
-  
-  if [ $pid -ne 0 ];then
-    echo -n "Stopping $JAVA_JAR ...(pid=$psid)"
-    su - $RUNNING_USER -c "kill -2 $psid"
-    if [ $? -eq 0 ];then
-      echo "[OK]"
-    else
-      echo "[Failed]"
-    fi
+  num=`expr $num + 1`
+
+  if [ $psid -ne 0 ];then
+     if [ "$num" -le 3 ];then
+        echo -n "attempt to kill... num:$num"
+        kill $psid
+        sleep 30s
+     else
+	echo "force kill ..."
+        kill -9 $psid
+     fi	
+     if [ $? -eq 0 ];then
+        echo "[shutdown $JAVA_JAR success]"
+     else
+        echo "[shutdown $JAVA_JAR failed]"
+     fi
     
-    sleep 30s
-    checkpid
-    if [ $psid -ne 0];then
-      stop
-    fi
+     checkpid
+     if [ $psid -ne 0];then
+        stop
+     fi
   else
-    echo "=================================="
-    echo "warn: $JAVA_JAR is not running"
-    echo "=================================="
+     echo "=================================="
+     echo "warn: $JAVA_JAR is not running"
+     echo "=================================="
   fi
 }
 
@@ -91,9 +98,9 @@ status(){
   checkpid
 
   if [ $psid -ne 0 ];then
-    echo "$JAVA_JAR is running! (pid=$psid)"
+     echo "$JAVA_JAR is running! (pid=$psid)"
   else
-    echo "$JAVA_JAR is not running"
+     echo "$JAVA_JAR is not running"
   fi
 }
 
@@ -108,18 +115,18 @@ status(){
 
 case $1 in
    'start')
-     start
-     ;;
+        start
+        ;;
    'stop')
-     stop
-     ;;
+        stop
+        ;;
    'restart')
-     stop
-     start
-     ;;
+        stop
+        start
+        ;;
    'status')
-     status
-     ;;
+        status
+        ;;
    *)
     echo "Usage: $0 {start|stop|restart|status|info}"
     exit 1
