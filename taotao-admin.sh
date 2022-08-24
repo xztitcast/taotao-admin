@@ -15,9 +15,9 @@
 # export PATH=$PATH:$JAVA_HOME/bin
 # :wq保存之后source /etc/profile
 
-JAVA_OPTS="-server -Xms2G -Xmx2G -Xmn512M -Xss1M -XX:MetaspaceSize=64M -XX:MaxMetaspaceSize=128M"
-JAVA_HOME="/roo/java/jdk-11.0.15.1"
-JAVA_JAR="taotao-admin-0.0.1-SNAPSHOT.jar"
+JAVA_OPTS="-server -Xms2G -Xmx2G -Xmn512M -Xss1M -XX:MetaspaceSize=128M -XX:MaxMetaspaceSize=256M"
+JAVA_HOME="/root/jdk-11.0.15.1"
+JAVA_JAR="taotao-admin-0.0.1-SNAPSHOT.jar" 
 
 #提示: 由于没有指定JAR包的目录该脚本必须和JAR包在同一目录
 #####################################################
@@ -46,7 +46,7 @@ start(){
      echo "================================"
   else
      echo -n "Starting $JAVA_JAR"
-     JAVA_CMD="nohup $JAVA_HOME/bin/java $JAVA_OPTS -jar $JAVA_JAR --spring.config.activate.on-profile=prod >/dev/null 2>&1 &"
+     JAVA_CMD="nohup $JAVA_HOME/bin/java $JAVA_OPTS -jar /root/taotao/$JAVA_JAR --spring.config.activate.on-profile=dev >/dev/null 2>&1 &"
      su - $RUNNING_USER -c "$JAVA_CMD"
      checkpid
      if [ $psid -ne 0 ];then
@@ -81,7 +81,7 @@ stop(){
      fi
     
      checkpid
-     if [ $psid -ne 0];then
+     if [ $psid -ne 0 ];then
         stop
      fi
   else
@@ -130,6 +130,4 @@ case $1 in
    *)
     echo "Usage: $0 {start|stop|restart|status|info}"
     exit 1
-
-
-
+esac
