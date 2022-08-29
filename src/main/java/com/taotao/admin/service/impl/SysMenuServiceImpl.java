@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.taotao.admin.common.Constant;
 import com.taotao.admin.entity.SysMenu;
@@ -37,12 +39,14 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
 	@Override
 	public List<SysMenu> getListParentId(Long parentId) {
-		return baseMapper.selectListParentId(parentId);
+		LambdaQueryWrapper<SysMenu> wrapper = Wrappers.lambdaQuery(SysMenu.class).eq(SysMenu::getParentId, parentId).orderByAsc(SysMenu::getSorted);
+		return this.list(wrapper);
 	}
 
 	@Override
 	public List<SysMenu> getNotButtonList() {
-		return baseMapper.selectNotButtonList();
+		LambdaQueryWrapper<SysMenu> wrapper = Wrappers.lambdaQuery(SysMenu.class).ne(SysMenu::getType, 2).orderByAsc(SysMenu::getSorted);
+		return this.list(wrapper);
 	}
 
 	@Override

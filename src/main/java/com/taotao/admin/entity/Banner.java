@@ -31,7 +31,7 @@ public class Banner {
     /**
      * 排序
      */
-    private Integer sortNum;
+    private Integer sorted;
     /**
      * 创建时间
      */

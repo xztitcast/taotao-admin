@@ -35,7 +35,7 @@ public class SysMenu implements Serializable {
 
     private String icon;
 
-    private Integer sortNum;
+    private Integer sorted;
     
     @TableField(exist = false)
     private List<SysMenu> list;

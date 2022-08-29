@@ -7,7 +7,7 @@ CREATE TABLE `sys_menu`  (
   `perms` varchar(500) CHARACTER SET utf8 NULL DEFAULT NULL COMMENT '授权(多个用逗号分隔，如：user:list,user:create)',
   `type` int NULL DEFAULT NULL COMMENT '类型   0：目录   1：菜单   2：按钮',
   `icon` varchar(50) CHARACTER SET utf8 NULL DEFAULT NULL COMMENT '菜单图标',
-  `sort_num` int NULL DEFAULT '0' COMMENT '排序',
+  `sorted` int NULL DEFAULT '0' COMMENT '排序',
   PRIMARY KEY (`menu_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COMMENT = '菜单管理';
 
@@ -118,7 +118,7 @@ CREATE TABLE `tb_banner`(
 	`url` varchar(100) NOT NULL COMMENT '图片地址',
 	`content` text DEFAULT NULL COMMENT '图片内容',
 	`is_show` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否显示(0: 否, 1:是)',
-	`sort_num` int NULL DEFAULT '0' COMMENT '排序',
+	`sorted` int NULL DEFAULT '0' COMMENT '排序',
 	`created` datetime DEFAULT NULL COMMENT '创建时间'
 )ENGINE=InnoDB DEFAULT CHARACTER SET utf8 COMMENT = 'banner轮播表';
 

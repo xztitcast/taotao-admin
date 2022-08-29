@@ -1,11 +1,16 @@
 package com.taotao.admin.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.taotao.admin.entity.SysRoleMenu;
 import com.taotao.admin.mapper.SysRoleMenuMapper;
@@ -31,13 +36,15 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
 
 	@Override
 	public List<Long> getMenuIdList(Long roleId) {
-		return baseMapper.selectMenuIdList(roleId);
+		List<SysRoleMenu> list = this.listByMap(Map.of("role_id", roleId));
+		return list.stream().map(SysRoleMenu::getMenuId).collect(Collectors.toList());
 	}
 
 	@Override
 	@Transactional
 	public int deleteBatch(Long... roleIds) {
-		return baseMapper.deleteBatch(roleIds);
+		LambdaQueryWrapper<SysRoleMenu> wrapper = Wrappers.lambdaQuery(SysRoleMenu.class).in(SysRoleMenu::getRoleId, Arrays.asList(roleIds));
+		return this.baseMapper.delete(wrapper);
 	}
 
 }

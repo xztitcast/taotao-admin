@@ -2,6 +2,8 @@ package com.taotao.admin.service.impl;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -54,7 +56,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
 	@Override
 	public List<Long> getRoleIdList(Long adder) {
-		return baseMapper.selectRoleIdList(adder);
+		List<SysRole> list = this.listByMap(Map.of("adder", adder));
+		return list.stream().map(SysRole::getRoleId).collect(Collectors.toList());
 	}
 
 	@Override
