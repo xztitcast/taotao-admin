@@ -18,7 +18,7 @@ public class BannerServiceImpl extends ServiceImpl<BannerMapper, Banner> impleme
 	public P<Banner> getBannerlList(int pageNum, int pageSize) {
 		IPage<Banner> page = new Page<>(pageNum, pageSize);
 		QueryWrapper<Banner> query = new QueryWrapper<>();
-		query.orderByDesc("sort_num");
+		query.orderByDesc("sorted");
 		page(page, query);
 		return new P<>(page.getTotal(), page.getRecords());
 	}

@@ -21,7 +21,7 @@ public class SysLogServiceImpl extends ServiceImpl<SysLogMapper, SysLog> impleme
 	public P<SysLog> getSysLogList(int pageNum, int pageSize, String username) {
 		IPage<SysLog> page = new Page<>(pageNum, pageSize);
 		QueryWrapper<SysLog> query = new QueryWrapper<>();
-		query.eq(username != null && !username.isBlank(), "username", username);
+		query.eq(username != null && !username.isBlank(), "`username`", username);
 		page(page, query);
 		return new P<>(page.getTotal(), page.getRecords());
 	}
