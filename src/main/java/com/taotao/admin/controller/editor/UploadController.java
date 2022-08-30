@@ -27,7 +27,7 @@ public class UploadController {
 	private CloudStorageService cloudStorageService;
 	
 	@PostMapping(value = "/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public R image(@RequestParam MultipartFile file, @RequestParam(required = false) Integer name) {
+	public R image(@RequestParam MultipartFile file, @RequestParam(required = false, defaultValue = "1") Integer name) {
 		String imgUrl = "";
 		try {
 			imgUrl = cloudStorageService.uploadFile(file, name);

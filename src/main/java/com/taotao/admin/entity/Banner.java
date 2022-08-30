@@ -2,6 +2,8 @@ package com.taotao.admin.entity;
 
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Getter;
@@ -12,6 +14,7 @@ import lombok.Setter;
 @TableName("tb_banner")
 public class Banner {
 
+	@TableId(type = IdType.AUTO)
 	private Integer id;
     /**
      * 图片地址
