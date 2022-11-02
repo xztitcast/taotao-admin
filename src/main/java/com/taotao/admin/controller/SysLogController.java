@@ -75,12 +75,11 @@ public class SysLogController extends BaseController {
 			sle.setCreated(DateFormatUtils.format(s.getCreated(), "yyyy-MM-dd HH:mm:ss"));
 			return sle;
 		}).collect(Collectors.toList());
-		excel.addRows(excelList);
 		response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
 		response.setContentType(MediaType.MULTIPART_FORM_DATA_VALUE);
 
 		try(OutputStream out = response.getOutputStream();){
-			excel.write(out);
+			excel.addRows(excelList).write(out);
 		}catch(Exception e){
 			throw e;
 		}

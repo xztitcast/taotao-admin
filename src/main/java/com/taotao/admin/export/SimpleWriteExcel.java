@@ -17,6 +17,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.BeanUtils;
@@ -31,6 +32,7 @@ import org.springframework.util.ReflectionUtils;
  */
 public class SimpleWriteExcel<T> {
 	
+	private int row = 0;
 	private final Workbook workbook;
     private final Sheet sheet;
 	private final List<Entry<Object,ExcelField>> excelFields = new ArrayList<>();
@@ -53,13 +55,14 @@ public class SimpleWriteExcel<T> {
 				Assert.notEmpty(this.excelFields, String.join("", clazz.toString()," Not ExcelField."));
 			    CellStyle titleCellStyle = this.workbook.createCellStyle();
 			    titleCellStyle.setAlignment(HorizontalAlignment.CENTER);
+			    titleCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
 			    Font titleFont = this.workbook.createFont();    
 			    titleFont.setBold(true);
-			    titleFont.setFontHeightInPoints((short)10);
 			    titleCellStyle.setFont(titleFont);
 			    sheet.setDefaultColumnWidth(20);
 			    sheet.setDefaultRowHeightInPoints(20);
-			    Row titleRow = this.sheet.createRow(0);
+			    Row titleRow = this.sheet.createRow(this.row);
+			    titleRow.setHeightInPoints((short)24);
 				for(int i=0,size=this.excelFields.size();i<size;i++) {
 					Cell cell = titleRow.createCell(i);
 					cell.setCellStyle(titleCellStyle);
@@ -86,6 +89,33 @@ public class SimpleWriteExcel<T> {
 				}
 			}
 		}
+		return this;
+	}
+	
+	/**
+	 * 重载添加统计行
+	 * @time 2022年11月02号 15:25
+	 * @param countMap
+	 * @return
+	 */
+	public  SimpleWriteExcel<T> addRows(Map<String, Object> countMap){
+		CellStyle titleCellStyle = this.workbook.createCellStyle();
+	    titleCellStyle.setAlignment(HorizontalAlignment.CENTER);
+	    Font titleFont = this.workbook.createFont();    
+	    titleFont.setBold(true);
+	    titleCellStyle.setFont(titleFont);
+	    Row countRow = this.sheet.createRow(this.row++);
+	    countRow.setRowStyle(titleCellStyle);
+	    countRow.setHeightInPoints((short)25);
+	    int index = 0;
+	    for(String key : countMap.keySet()) {
+	    	Cell cell = countRow.createCell(index++);
+	    	cell.setCellStyle(titleCellStyle);
+	    	cell.setCellValue(key);
+	    	Cell valueCell = countRow.createCell(index++);
+	    	valueCell.setCellStyle(titleCellStyle);
+	    	valueCell.setCellValue(countMap.get(key).toString());
+	    }
 		return this;
 	}
 	
